@@ -105,13 +105,13 @@ func TestShowLimit(t *testing.T) {
 		}
 		fmt.Println("=======================")
 		fmt.Println("id", id)
-		fmt.Println("nis", nama)
-		fmt.Println("nama", tgl_lahir)
-		fmt.Println("kelas", alamat)
-		fmt.Println("jurusan", nis)
-		fmt.Println("email", kelas)
-		fmt.Println("tanggal lahir", jurusan)
-		fmt.Println("alamat", email)
+		fmt.Println("nama", nama)
+		fmt.Println("tanggal lahir", tgl_lahir)
+		fmt.Println("alamat", alamat)
+		fmt.Println("nis", nis)
+		fmt.Println("kelas", kelas)
+		fmt.Println("jurusan", jurusan)
+		fmt.Println("email", email)
 		fmt.Println("gender", gender)
 	}
 
@@ -123,7 +123,7 @@ func TestShowWhere(t *testing.T) {
 
 	ctx := context.Background()
 
-	script := "SELECT id, nama, tgl_lahir, alamat, nis, kelas, jurusan, email, gender FROM siswa WHERE id = 5"
+	script := "SELECT id as 'id', nama as 'name', tgl_lahir as 'tanggal lahir', alamat as 'alamat rumah', nis as 'NIS', kelas as 'Kelas', jurusan as 'Jurusan', email as 'Email', gender as 'Jenis Kelamin' FROM siswa WHERE id = 5"
 	rows, err := db.QueryContext(ctx, script)
 	if err != nil {
 		panic(err)
@@ -140,14 +140,59 @@ func TestShowWhere(t *testing.T) {
 		}
 		fmt.Println("=======================")
 		fmt.Println("id", id)
-		fmt.Println("nis", nama)
-		fmt.Println("nama", tgl_lahir)
-		fmt.Println("kelas", alamat)
-		fmt.Println("jurusan", nis)
-		fmt.Println("email", kelas)
-		fmt.Println("tanggal lahir", jurusan)
-		fmt.Println("alamat", email)
+		fmt.Println("nama", nama)
+		fmt.Println("tanggal lahir", tgl_lahir)
+		fmt.Println("alamat", alamat)
+		fmt.Println("nis", nis)
+		fmt.Println("kelas", kelas)
+		fmt.Println("jurusan", jurusan)
+		fmt.Println("email", email)
 		fmt.Println("gender", gender)
 	}
 
+}
+
+func TestShowAlias(t *testing.T) {
+	db := GetConnection()
+	defer db.Close()
+
+	ctx := context.Background()
+
+	script := "SELECT id as 'id', nama as 'name', tgl_lahir as 'tanggal lahir', alamat as 'alamat rumah', nis as 'NIS', kelas as 'Kelas', jurusan as 'Jurusan', email as 'Email', gender as 'Jenis Kelamin' FROM siswa WHERE id = 5"
+	rows, err := db.QueryContext(ctx, script)
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id int
+		var nis int
+		var nama string
+		var tgl_lahir string // Ubah ini ke string jika Anda menyimpannya sebagai VARCHAR
+		var alamat string
+		var kelas string
+		var jurusan string
+		var email string
+		var gender string
+
+		err = rows.Scan(&id, &nama, &tgl_lahir, &alamat, &nis, &kelas, &jurusan, &email, &gender)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("=======================")
+		fmt.Println("id:", id)
+		fmt.Println("nama:", nama)
+		fmt.Println("tanggal lahir:", tgl_lahir)
+		fmt.Println("alamat:", alamat)
+		fmt.Println("nis:", nis)
+		fmt.Println("kelas:", kelas)
+		fmt.Println("jurusan:", jurusan)
+		fmt.Println("email:", email)
+		fmt.Println("gender:", gender)
+	}
+
+	if err := rows.Err(); err != nil {
+		panic(err)
+	}
 }
