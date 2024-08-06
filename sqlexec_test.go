@@ -12,8 +12,8 @@ func TestExecSql(t *testing.T) {
 
 	ctx := context.Background()
 
-	script := "INSERT INTO siswa(nama, tgl_lahir, alamat, nis, kelas, jurusan, email, gender) VALUES('Egi', '2006-09-02', 'Jl. Kebon Jeruk No. 1', 123456, '12-A', 'IPA', 'egi@example.com', 'L')"
-	//"UPDATE siswa SET nama = 'uzan' WHERE id = 4"
+	script := //"INSERT INTO siswa(nama, tgl_lahir, alamat, nis, kelas, jurusan, email, gender) VALUES('Egi', '2006-09-02', 'Jl. Kebon Jeruk No. 1', 123456, '12-A', 'IPA', 'egi@example.com', 'L')"
+		"UPDATE siswa SET nama = 'uzan' WHERE id = 21"
 	//"DELETE FROM siswa WHERE id = '4'"
 	_, err := db.ExecContext(ctx, script)
 	if err != nil {
