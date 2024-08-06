@@ -42,6 +42,7 @@ func TestShowAll(t *testing.T) {
 		if err != nil {
 			panic(err)
 		}
+		fmt.Println("==================")
 		fmt.Println("id", id)
 		fmt.Println("nis", nama)
 		fmt.Println("nama", tgl_lahir)
@@ -152,6 +153,54 @@ func TestShowWhere(t *testing.T) {
 
 }
 
+func TestShowWhereOperator(t *testing.T) {
+	db := GetConnection()
+	defer db.Close()
+
+	ctx := context.Background()
+
+	script :=
+		//"SELECT * FROM siswa WHERE NIS < 123468"
+		//"SELECT * FROM siswa WHERE NIS <= 123468"
+		//"SELECT * FROM siswa WHERE NIS > 123480"
+		//"SELECT * FROM siswa WHERE NIS >= 123480"
+		//"SELECT * FROM siswa WHERE NIS = 123480"
+		//"SELECT * FROM siswa WHERE NIS <> 123480"
+		//"SELECT * FROM siswa WHERE kelas = '12-A' AND JURUSAN = 'IPA'"
+		//"SELECT * FROM siswa WHERE kelas = '12-A' OR JURUSAN = 'IPS'"
+		//"SELECT * FROM siswa WHERE NOT JURUSAN = 'IPA'"
+		//"SELECT * FROM siswa WHERE NIS BETWEEN 123470 AND 123475 "
+		//"SELECT * FROM siswa WHERE nama LIKE 'A%'"\
+		//"SELECT * FROM siswa WHERE nama NOT LIKE 'A%'"
+		"SELECT * FROM siswa WHERE alamat IN ('Jl. Kebon Jeruk No. 1')"
+	rows, err := db.QueryContext(ctx, script)
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id, nis int
+		var nama, tgl_lahir, alamat, kelas, jurusan, email, gender string
+
+		err = rows.Scan(&id, &nama, &tgl_lahir, &alamat, &nis, &kelas, &jurusan, &email, &gender)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("=======================")
+		fmt.Println("id", id)
+		fmt.Println("nama", nama)
+		fmt.Println("tanggal lahir", tgl_lahir)
+		fmt.Println("alamat", alamat)
+		fmt.Println("nis", nis)
+		fmt.Println("kelas", kelas)
+		fmt.Println("jurusan", jurusan)
+		fmt.Println("email", email)
+		fmt.Println("gender", gender)
+	}
+
+}
+
 func TestShowAlias(t *testing.T) {
 	db := GetConnection()
 	defer db.Close()
@@ -191,8 +240,45 @@ func TestShowAlias(t *testing.T) {
 		fmt.Println("email:", email)
 		fmt.Println("gender:", gender)
 	}
+}
 
-	if err := rows.Err(); err != nil {
+func TestShowOrderBy(t *testing.T) {
+	db := GetConnection()
+	defer db.Close()
+
+	ctx := context.Background()
+
+	script := "SELECT id, nama, tgl_lahir, alamat, nis, kelas, jurusan, email, gender FROM siswa ORDER BY nis DESC"
+	rows, err := db.QueryContext(ctx, script)
+	if err != nil {
 		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id int
+		var nis int
+		var nama string
+		var tgl_lahir string // Ubah ini ke string jika Anda menyimpannya sebagai VARCHAR
+		var alamat string
+		var kelas string
+		var jurusan string
+		var email string
+		var gender string
+
+		err = rows.Scan(&id, &nama, &tgl_lahir, &alamat, &nis, &kelas, &jurusan, &email, &gender)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("=======================")
+		fmt.Println("id:", id)
+		fmt.Println("nama:", nama)
+		fmt.Println("tanggal lahir:", tgl_lahir)
+		fmt.Println("alamat:", alamat)
+		fmt.Println("nis:", nis)
+		fmt.Println("kelas:", kelas)
+		fmt.Println("jurusan:", jurusan)
+		fmt.Println("email:", email)
+		fmt.Println("gender:", gender)
 	}
 }
