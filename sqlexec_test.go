@@ -160,19 +160,20 @@ func TestShowWhereOperator(t *testing.T) {
 	ctx := context.Background()
 
 	script :=
-		//"SELECT * FROM siswa WHERE NIS < 123468"
-		//"SELECT * FROM siswa WHERE NIS <= 123468"
-		//"SELECT * FROM siswa WHERE NIS > 123480"
-		//"SELECT * FROM siswa WHERE NIS >= 123480"
-		//"SELECT * FROM siswa WHERE NIS = 123480"
-		//"SELECT * FROM siswa WHERE NIS <> 123480"
-		//"SELECT * FROM siswa WHERE kelas = '12-A' AND JURUSAN = 'IPA'"
-		//"SELECT * FROM siswa WHERE kelas = '12-A' OR JURUSAN = 'IPS'"
-		//"SELECT * FROM siswa WHERE NOT JURUSAN = 'IPA'"
-		//"SELECT * FROM siswa WHERE NIS BETWEEN 123470 AND 123475 "
-		//"SELECT * FROM siswa WHERE nama LIKE 'A%'"\
-		//"SELECT * FROM siswa WHERE nama NOT LIKE 'A%'"
-		"SELECT * FROM siswa WHERE alamat IN ('Jl. Kebon Jeruk No. 1')"
+		//"SELECT * FROM siswa WHERE NIS < 123468"  							//kurang dari
+		//"SELECT * FROM siswa WHERE NIS <= 123468" 							//kurang dari sama dengan
+		//"SELECT * FROM siswa WHERE NIS > 123480"  							//lebih dari
+		//"SELECT * FROM siswa WHERE NIS >= 123480"								//lebih dari sama dengan
+		//"SELECT * FROM siswa WHERE NIS = 123480"								//sama dengan
+		//"SELECT * FROM siswa WHERE NIS <> 123480"								//tidak sama dengan
+		//"SELECT * FROM siswa WHERE kelas = '12-A' AND JURUSAN = 'IPA'"		//value 1 dan 2 harus benar
+		//"SELECT * FROM siswa WHERE kelas = '12-X' OR JURUSAN = 'sss'" 		//value salah satu benar
+		//"SELECT * FROM siswa WHERE NOT JURUSAN = 'IPA'"						//nilai kecuali di value
+		//"SELECT * FROM siswa WHERE NIS BETWEEN 123470 AND 123475 " 			//memfilter dari value 1 sampai value kedua
+		//"SELECT * FROM siswa WHERE nama LIKE 'A%'"							//mengurutkan dari kata a
+		//"SELECT * FROM siswa WHERE nama NOT LIKE 'A%'"						//mengumpulkan berdasarkan terkecuali value
+		"SELECT * FROM siswa WHERE alamat IN ('Jl. Kebon Jeruk No. 1')" //mencari berdasarkan value
+		//"SELECT * FROM siswa WHERE alamat NOT IN ('Jl. Kebon Jeruk No. 1')" //mencari kecuali value
 	rows, err := db.QueryContext(ctx, script)
 	if err != nil {
 		panic(err)
@@ -215,15 +216,8 @@ func TestShowAlias(t *testing.T) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var id int
-		var nis int
-		var nama string
-		var tgl_lahir string // Ubah ini ke string jika Anda menyimpannya sebagai VARCHAR
-		var alamat string
-		var kelas string
-		var jurusan string
-		var email string
-		var gender string
+		var id, nis int
+		var nama, tgl_lahir, alamat, kelas, jurusan, email, gender string
 
 		err = rows.Scan(&id, &nama, &tgl_lahir, &alamat, &nis, &kelas, &jurusan, &email, &gender)
 		if err != nil {
@@ -242,7 +236,41 @@ func TestShowAlias(t *testing.T) {
 	}
 }
 
-func TestShowOrderBy(t *testing.T) {
+func TestShowOrderByASC(t *testing.T) {
+	db := GetConnection()
+	defer db.Close()
+
+	ctx := context.Background()
+
+	script := "SELECT id, nama, tgl_lahir, alamat, nis, kelas, jurusan, email, gender FROM siswa ORDER BY nis ASC"
+	rows, err := db.QueryContext(ctx, script)
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id, nis int
+		var nama, tgl_lahir, alamat, kelas, jurusan, email, gender string
+
+		err = rows.Scan(&id, &nama, &tgl_lahir, &alamat, &nis, &kelas, &jurusan, &email, &gender)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("=======================")
+		fmt.Println("id:", id)
+		fmt.Println("nama:", nama)
+		fmt.Println("tanggal lahir:", tgl_lahir)
+		fmt.Println("alamat:", alamat)
+		fmt.Println("nis:", nis)
+		fmt.Println("kelas:", kelas)
+		fmt.Println("jurusan:", jurusan)
+		fmt.Println("email:", email)
+		fmt.Println("gender:", gender)
+	}
+}
+
+func TestShowOrderByDESC(t *testing.T) {
 	db := GetConnection()
 	defer db.Close()
 
@@ -256,15 +284,8 @@ func TestShowOrderBy(t *testing.T) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var id int
-		var nis int
-		var nama string
-		var tgl_lahir string // Ubah ini ke string jika Anda menyimpannya sebagai VARCHAR
-		var alamat string
-		var kelas string
-		var jurusan string
-		var email string
-		var gender string
+		var id, nis int
+		var nama, tgl_lahir, alamat, kelas, jurusan, email, gender string
 
 		err = rows.Scan(&id, &nama, &tgl_lahir, &alamat, &nis, &kelas, &jurusan, &email, &gender)
 		if err != nil {
